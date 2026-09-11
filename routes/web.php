@@ -44,4 +44,11 @@ Route::get('/sinhvien/add', [SinhVienController::class, 'add'])->name('sinhvien.
 // tách biệt hoàn toàn với URL thật POST (/sinhvien)
 Route::post('/sinhvien', [SinhVienController::class, 'store'])->name('sinhvien.store');
 
+
+// lớp học 
 Route::get('/lophoc', [LopHocController::class, 'index'])->name('lophoc.index');
+Route::get('/lophoc/them', [LopHocController::class, 'create'])->name('lophoc.create');
+Route::post('/lophoc', [LopHocController::class, 'store'])->name('lophoc.store');
+Route::get('/lophoc/{id}/sua', [LopHocController::class, 'edit'])->name('lophoc.edit');
+Route::put('/lophoc/{id}', [LopHocController::class, 'update'])->name('lophoc.update');
+Route::delete('/lophoc/{id}', [LopHocController::class, 'destroy'])->name('lophoc.destroy');

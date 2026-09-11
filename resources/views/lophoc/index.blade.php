@@ -13,33 +13,81 @@
     .badge-active{ background:#DFF3E3; color:#1E7B3C; }
     .badge-inactive{ background:#FBEAEA; color:#A33; }
 
-    /* .pagination{ display:flex; gap:6px; list-style:none; padding:0; }
-    .pagination li a, .pagination li span{
-    display:inline-block; padding:6px 12px; border-radius:6px;
-    border:1px solid var(--line); color:var(--ink); text-decoration:none; font-size:13px;
-    }
-    .pagination li.active span{ background:var(--navy); color:#fff; border-color:var(--navy); }
-    .pagination li.disabled span{ color:var(--ink-muted); } */
-
     .per-page-select{
-    padding:8px 12px;
-    border:1px solid var(--line);
-    border-radius:8px;
-    background:#fff;
-    color:var(--ink);
-    font-size:13px;
-    font-family:'Inter', sans-serif;
-    cursor:pointer;
-    outline:none;
-}
-.per-page-select:hover{ border-color:var(--gold); }
+        padding:8px 12px;
+        border:1px solid var(--line);
+        border-radius:8px;
+        background:#fff;
+        color:var(--ink);
+        font-size:13px;
+        font-family:'Inter', sans-serif;
+        cursor:pointer;
+        outline:none;
+    }
+    .per-page-select:hover{ border-color:var(--gold); }
 
+    /* ===== Thanh trên bảng: nút thêm ===== */
+    .table-toolbar{
+        display:flex;
+        justify-content:flex-end;
+        margin-bottom:14px;
+    }
+    .btn-add{
+        display:inline-flex;
+        align-items:center;
+        gap:6px;
+        background: var(--navy);
+        color:#F5F1E8;
+        border:none;
+        padding:9px 18px;
+        border-radius:8px;
+        font-size:13.5px;
+        font-weight:600;
+        text-decoration:none;
+        transition:background .15s ease;
+    }
+    .btn-add:hover{ background: var(--navy-2); }
+
+    /* ===== Cột thao tác ===== */
+    .action-group{ display:flex; gap:8px; }
+    .btn-edit,
+    .btn-delete{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        padding:6px 14px;
+        border-radius:6px;
+        font-size:12.5px;
+        font-weight:600;
+        text-decoration:none;
+        border:1px solid transparent;
+        cursor:pointer;
+        font-family:'Inter', sans-serif;
+    }
+    .btn-edit{
+        background:#FFF6E4;
+        color:#8A6A0E;
+        border-color:#E9D6A0;
+    }
+    .btn-edit:hover{ background:#FCEBC4; }
+    .btn-delete{
+        background:#FBEAEA;
+        color:#A33;
+        border-color:#E8B4B4;
+    }
+    .btn-delete:hover{ background:#F6D6D6; }
 </style>
 @endpush
 
 @section('content')
     <div class="page-title">Danh sách lớp học</div>
     <div class="page-sub">Dữ liệu lấy trực tiếp từ bảng lop_hocs.</div>
+
+
+    {{-- Nút thêm lớp học, đặt trên bảng --}}
+    <div class="table-toolbar">
+        <a href="{{ route('lophoc.create') }}" class="btn-add">+ Thêm lớp học</a>
+    </div>
 
     <table>
         <tr>
@@ -49,6 +97,7 @@
             <th>Sĩ số</th>
             <th>Ghi chú</th>
             <th>Trạng thái</th>
+            <th>Thao tác</th>
         </tr>
 
         @forelse ($lophocs as $lop)
@@ -65,14 +114,26 @@
                     <span class="badge badge-inactive">Ngừng hoạt động</span>
                 @endif
             </td>
+            <td>
+                <div class="action-group">
+                    <a href="{{ route('lophoc.edit', $lop->id) }}" class="btn-edit">Sửa</a>
+
+                    <form action="{{ route('lophoc.destroy', $lop->id) }}" method="POST"
+                          onsubmit="return confirm('Bạn có chắc muốn xóa lớp {{ $lop->ten_lop }} không?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-delete">Xóa</button>
+                    </form>
+                </div>
+            </td>
         </tr>
         @empty
         <tr>
-            <td colspan="6" style="text-align:center; color:var(--ink-muted);">Chưa có lớp học nào.</td>
+            <td colspan="7" style="text-align:center; color:var(--ink-muted);">Chưa có lớp học nào.</td>
         </tr>
         @endforelse
     </table>
-    
+
     {{-- bắt số lượng bản ghi mỗi trang --}}
     <select
     onchange="window.location.href='{{ url()->current() }}?per_page=' + this.value"
